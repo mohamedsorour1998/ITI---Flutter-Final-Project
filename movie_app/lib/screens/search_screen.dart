@@ -19,9 +19,12 @@ class _SearchScreenState extends State<SearchScreen> {
     final searchString = _searchController.text;
     if (searchString.isNotEmpty) {
       final movieApi = MovieApi();
-      final results = await movieApi.searchMovies(searchString);
+      final results = await movieApi.fetchMovies('movie/popular');
       setState(() {
-        _searchResults = results;
+        _searchResults = results
+            .where((movie) =>
+                movie.title.toLowerCase().contains(searchString.toLowerCase()))
+            .toList();
       });
     }
   }
@@ -56,8 +59,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 MaterialPageRoute(
                   builder: (context) => MovieDetailsScreen(
                     movie: _searchResults[index],
-                    // title: _searchResults[index].title,
-                    // crewMember: _searchResults[index].crewMember,
                   ),
                 ),
               );
